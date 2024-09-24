@@ -40,19 +40,15 @@ from django.contrib.auth.models import User
 class BookAPITest(APITestCase):
 
     def setUp(self):
-        # Создаем пользователя
         self.user = User.objects.create_user(username='testuser', password='testpass')
 
-        # Получаем JWT-токен
         url = reverse('token_obtain_pair')
         response = self.client.post(url, {'username': 'testuser', 'password': 'testpass'}, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.token = response.data['access']
 
-        # Добавляем заголовок Authorization для всех последующих запросов
         self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self.token)
 
-        # Создаем тестовую книгу
         self.book = Book.objects.create(
             title="Test Book",
             author="Test Author",
